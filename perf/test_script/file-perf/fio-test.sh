@@ -4,11 +4,11 @@ output_file="fio_results.csv"
 
 echo "blocksize,IOPS,Throughput(MB/s),Latency(usec)" > $output_file
 
-blocksizes=("4k" "8k" "16k" "32k" "64k" "128k")
+blocksizes=( "8k" "32k" "128k" "512k" "2m" "8m")
 filename="testfile"
 size="1G"
 runtime=30
-rw_mode="randread"
+rw_mode="read"
 
 for bs in "${blocksizes[@]}"; do
     echo "Running FIO with blocksize=$bs..."
