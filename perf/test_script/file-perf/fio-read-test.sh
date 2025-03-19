@@ -1,6 +1,6 @@
 #!/bin/bash
 
-output_file="fio_results.csv"
+output_file="fio_results-read.csv"
 
 echo "blocksize,IOPS,Throughput(MB/s),Latency(usec)" > $output_file
 
@@ -12,8 +12,8 @@ rw_mode="read"
 
 for bs in "${blocksizes[@]}"; do
     echo "Running FIO with blocksize=$bs..."
-    
-    fio --name=test --rw=$rw_mode --bs=$bs --direct=1 --size=$size --iodepth=16 --runtime=$runtime --filename=$filename --output-format=json | awk '/^{/{flag=1} flag' > fio_output.json
+    sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+    fio --name=test --rw=$rw_mode --bs=$bs --size=$size --iodepth=16 --runtime=$runtime --filename=$filename --output-format=json | awk '/^{/{flag=1} flag' > fio_output.json
     
     iops=$(jq '.jobs[0].read.iops' fio_output.json)
     throughput=$(jq '.jobs[0].read.bw' fio_output.json) # Bandwidth in KB/s
