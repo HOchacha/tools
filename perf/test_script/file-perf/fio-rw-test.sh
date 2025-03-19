@@ -13,7 +13,7 @@ rw_mode="randrw"
 for bs in "${blocksizes[@]}"; do
     echo "Running FIO with blocksize=$bs..."
     sudo sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
-    fio --name=test --rw=$rw_mode --bs=$bs  --size=$size --iodepth=16 --runtime=$runtime --filename=$filename --output-format=json | awk '/^{/{flag=1} flag' > fio_output.json
+    fio --name=test --rw=$rw_mode --bs=$bs --size=$size --iodepth=16 --runtime=$runtime --filename=$filename --output-format=json | awk '/^{/{flag=1} flag' > fio_output.json
     
     read_iops=$(jq '.jobs[0].read.iops' fio_output.json)
     read_throughput=$(jq '.jobs[0].read.bw' fio_output.json) # Bandwidth in KB/s
